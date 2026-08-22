@@ -1,50 +1,110 @@
-import { useEffect, useState } from "react";
-import { getHealth } from "./services/api";
-import API_URL from "./services/api";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { useAuth } from "./context/AuthContext";
+import Navbar from "./components/Navbar";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import ResidentDashboard from "./pages/ResidentDashboard";
+import RaiseComplaint from "./pages/RaiseComplaint";
+import ComplaintDetail from "./pages/ComplaintDetail";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminComplaints from "./pages/AdminComplaints";
+import AdminComplaintManage from "./pages/AdminComplaintManage";
+import NoticeBoard from "./pages/NoticeBoard";
+import AdminNotices from "./pages/AdminNotices";
 import "./App.css";
 
-function App() {
-  const [health, setHealth] = useState(null);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    getHealth()
-      .then(setHealth)
-      .catch((err) => setError(err.message));
-  }, []);
-
+const HomeRedirect = () => {
+  const { user, loading } = useAuth();
+  if (loading) return <div className="page-center">Loading...</div>;
+  if (!user) return <Navigate to="/login" replace />;
   return (
-    <main className="app">
-      <section className="hero-card">
-        <p className="badge">Society Maintenance Tracker</p>
-        <h1>Maintenance complaints, simplified</h1>
-        <p className="subtitle">
-          Residents raise and track complaints. Admins manage workflow,
-          priorities, notices, and overdue alerts.
-        </p>
+    <Navigate
+      to={user.role === "admin" ? "/admin" : "/resident"}
+      replace
+    />
+  );
+};
 
-        <div className="status-card">
-          <h2>API Status</h2>
-          <p className="api-url">{API_URL}</p>
-          {health && (
-            <ul>
-              <li>
-                Server: <strong>{health.status}</strong>
-              </li>
-              <li>
-                MongoDB: <strong>{health.mongo}</strong>
-              </li>
-            </ul>
-          )}
-          {error && <p className="error">Could not reach API: {error}</p>}
-        </div>
+function App() {
+  return (
+    <div className="app-shell">
+      <Navbar />
+      <main className="main-content">
+        <Routes>
+          <Route path="/" element={<HomeRedirect />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-        <p className="note">
-          Backend API is live. Full React UI pages can be added on top of the
-          existing REST endpoints documented in README.md.
-        </p>
-      </section>
-    </main>
+          <Route
+            path="/resident"
+            element={
+              <ProtectedRoute role="resident">
+                <ResidentDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/resident/new"
+            element={
+              <ProtectedRoute role="resident">
+                <RaiseComplaint />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/complaints/:id"
+            element={
+              <ProtectedRoute>
+                <ComplaintDetail />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute role="admin">
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/complaints"
+            element={
+              <ProtectedRoute role="admin">
+                <AdminComplaints />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/complaints/:id"
+            element={
+              <ProtectedRoute role="admin">
+                <AdminComplaintManage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/notices"
+            element={
+              <ProtectedRoute role="admin">
+                <AdminNotices />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/notices"
+            element={
+              <ProtectedRoute>
+                <NoticeBoard />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </main>
+    </div>
   );
 }
 

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Society Maintenance Tracker
 
 A full-stack platform for apartment societies to manage maintenance complaints, track status history, post notices, and notify residents via email.
@@ -322,3 +323,6 @@ See [SYSTEM_DESIGN.md](./SYSTEM_DESIGN.md) for the 800-word write-up covering co
 - Complaint reassignment to staff
 - Export dashboard reports as PDF
 - Multi-society support
+=======
+# society-maintenance-tracker
+>>>>>>> da6b182e9749480caa0b35f2fc8983107236354c
