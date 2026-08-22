@@ -296,11 +296,20 @@ npm run dev
 
 ## Hosted Application
 
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for full deploy steps.
+
 | Service | URL |
 |---------|-----|
-| Frontend | _Deploy to Vercel — Phase 13_ |
-| Backend | _Deploy to Render — Phase 13_ |
-| GitHub | _Add repository URL after Phase 12_ |
+| Frontend | _Deploy to Vercel — see DEPLOYMENT.md_ |
+| Backend | _Deploy to Render — see DEPLOYMENT.md_ |
+| GitHub | _Your public repository URL_ |
+
+### Quick deploy summary
+
+1. **Render** — root dir `backend`, start `npm start`, add env vars from `.env.example`
+2. **Vercel** — root dir `frontend`, set `VITE_API_URL` to your Render URL
+3. **Render** — set `FRONTEND_URL` to your Vercel URL (CORS)
+4. **Render Shell** — run `npm run seed:admin` once
 
 ## System Design
 
